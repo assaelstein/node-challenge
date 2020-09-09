@@ -2,19 +2,29 @@ const createGroup = require("./modules/createGroup");
 const createSite = require("./modules/createSite");
 const createOrg = require("./modules/createOrg");
 const updateOrg = require("./modules/updateOrg");
+const searchDB = require("./modules/createDB.js");
+const dropandMakeDB = require("./modules/dropDB");
 
-createOrg()
+const dbName = "Trackmatic";
 
+searchDB(dbName)
+  .then((res) => {
+    if (res === 1) {
+      console.log(
+        "this DB name already exists, proceeding to drop it and create new with same name"
+      );
+      dropandMakeDB(dbName)
+        .then((res) => {
+        console.log(res);
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    } else {
+      console.log("DB with name: " + dbName + " created ");
+    }
+  })
+  .catch((e) => {
+    console.log(e);
+  });
 
-// do {
-//   console.log("which category of table to be made?");
-//   console.log("Org, Group or Site?");
-
-//   if (!input) {
-//     console.log("try again");
-//   } else if (input === "org") {
-//     createGroup();
-//   } else {
-//     console.log("no response");
-//   }
-// } while (input != "org");
