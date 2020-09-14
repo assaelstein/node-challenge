@@ -1,30 +1,39 @@
-const createGroup = require("./modules/createGroup");
-const createSite = require("./modules/createSite");
-const createOrg = require("./modules/createOrg");
-const updateOrg = require("./modules/updateOrg");
-const searchDB = require("./modules/createDB.js");
-const dropandMakeDB = require("./modules/dropDB");
+const makeDB = require("./modules/db/makeDb.js");
+const tables = require("./modules/tables/table");
+const createGroup = require("./modules/create/createGroup");
+const createOrg = require("./modules/create/createOrg");
+const createSite = require("./modules/create/createSite");
+const read = require("./modules/read/read");
+const updateGroup = require("./modules/update/updateGroup");
+const updateOrg = require("./modules/update/updateOrg");
+const updateSite = require("./modules/update/updatesite");
+const deleteGroup = require("./modules/delete/deleteGroup");
+const deleteOrg = require("./modules/delete/deleteOrg");
+const deleteSite = require("./modules/delete/deleteSite");
 
-const dbName = "Trackmatic";
+const putTogether = async () => {
+  try {
+    await makeDB();
+    await tables();
+    await createGroup("A", "B", "C", "D", "E");
+    await createOrg("A", "B", "C", "D", "E");
+    await createSite("A", "B", "C", "D", "E");
+    await read();
+    await updateGroup("zzz", "770", "E");
+    await updateOrg("Checkers", "784", "E");
+    await updateSite("FoodLovers", "89443", "C");
+    await read();
+    await deleteGroup("A");
+    await deleteOrg("Checkers");
+    await deleteSite("FoodLovers");
+    await read();
+  } catch (e) {
+    return e;
+  }
+};
 
-searchDB(dbName)
-  .then((res) => {
-    if (res === 1) {
-      console.log(
-        "this DB name already exists, proceeding to drop it and create new with same name"
-      );
-      dropandMakeDB(dbName)
-        .then((res) => {
-        console.log(res);
-        })
-        .catch((e) => {
-          console.log(e);
-        });
-    } else {
-      console.log("DB with name: " + dbName + " created ");
-    }
-  })
+putTogether()
+  .then(() => {})
   .catch((e) => {
     console.log(e);
   });
-
