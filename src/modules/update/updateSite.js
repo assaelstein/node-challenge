@@ -21,7 +21,7 @@ const updateSite = async (newName, newReference, currentName) => {
     await db.promise().query(instructionsDB);
     const update1 = await db.promise().query(instructions1);
     if (update1[0].changedRows > 0) {
-      console.log(chalk.bgWhite.black("Site table updated!"));
+      console.log(chalk.bgWhite.black("Site updated!"));
     }
   } catch (e) {
     console.log(e);

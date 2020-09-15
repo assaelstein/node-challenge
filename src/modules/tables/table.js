@@ -16,7 +16,7 @@ const tables = async () => {
     const tableO = await db.promise().query(instructionsO);
     const tableS = await db.promise().query(instructionsS);
 
-    console.log(chalk.bgGreen.black("Org, site and group tables created!"));
+    console.log(chalk.bgGreen.black("Org, site and group tables made!"));
   } catch (e) {
     console.log(e);
     throw e;

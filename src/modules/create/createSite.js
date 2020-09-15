@@ -1,3 +1,4 @@
+const chalk = require("chalk");
 const db = require("../connect/mySqlConnect");
 
 const createSite = async (
@@ -18,7 +19,9 @@ const createSite = async (
   try {
     await db.promise().query("USE DB1");
     const site = await db.promise().query(instructions, [siteValues]);
-    return "site table created!";
+    if (site[0].affectedRows > 0) {
+      console.log(chalk.bgBlue("site created!"));
+    }
   } catch (e) {
     console.log(e);
     throw e;

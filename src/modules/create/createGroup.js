@@ -1,3 +1,4 @@
+const chalk = require("chalk");
 const db = require("../connect/mySqlConnect");
 
 const createGroup = async (
@@ -18,6 +19,11 @@ const createGroup = async (
   try {
     await db.promise().query("USE DB1");
     const group = await db.promise().query(instructions, [groupValues]);
+
+    if (group[0].affectedRows > 0) {
+      console.log(chalk.bgBlue("group created!"));
+    }
+
     return "Org table created!";
   } catch (e) {
     console.log(e);
