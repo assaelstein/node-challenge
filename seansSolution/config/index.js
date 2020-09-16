@@ -15,6 +15,7 @@ module.exports = {
           id: ["id", "VARCHAR(255)"],
           name: ["name", "VARCHAR(255)"],
           reference: ["reference", "VARCHAR(255)"],
+          country: ["country", "VARCHAR(255)"],
         },
       },
       orgs: {
