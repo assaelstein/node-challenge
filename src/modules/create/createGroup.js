@@ -15,7 +15,7 @@ const createGroup = async (
     [name2, reference2],
     [name3, reference3],
   ];
-
+  // this is a BIG no-no. This method should ONLY be creating 1 group at a time.
   try {
     await db.promise().query("USE DB1");
     const group = await db.promise().query(instructions, [groupValues]);

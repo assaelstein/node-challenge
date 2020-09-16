@@ -5,15 +5,18 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon src/app.js"
+    "dev": "nodemon seansSolution/app.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "chalk": "^4.1.0",
+    "dotenv": "^8.2.0",
     "git": "^0.1.5",
     "mysql2": "^2.1.0",
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.4",
+    "ramda": "^0.27.1",
+    "uniqid": "^5.2.0"
   }
 }

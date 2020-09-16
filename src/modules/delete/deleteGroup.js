@@ -5,6 +5,7 @@ const deleteGroup = async (entryToDelete) => {
   const instructionsDB = "USE DB1";
   const instructions1 =
     "DELETE FROM Group1 WHERE name = " + "'" + entryToDelete + "'";
+  //String injection? Ie backticks: ``. ALWAYS USE
 
   try {
     await db.promise().query(instructionsDB);

@@ -10,7 +10,7 @@ const read = async () => {
     await db.promise().query("USE DB1");
 
     const readG = await db.promise().query(instructionG);
-
+    //again, you don't need variabeles on lines 5,6,7 just to use them one.
     const readO = await db.promise().query(instructionO);
 
     const readS = await db.promise().query(instructionS);

@@ -2,6 +2,8 @@ const chalk = require("chalk");
 const db = require("../connect/mySqlConnect");
 
 const updateGroup = async (newName, newReference, currentName) => {
+  //what if I don't want to push in a reference? Ie I just want to update the name?
+  //What if there's a new field in the group?
   const instructionsDB = "USE DB1";
   const instructions1 =
     "UPDATE Group1 SET Name = " +
