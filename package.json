@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
-    "start":"babel-node src/index.js", 
-    "dev": "nodemon src/app.js"
+    "start": "babel-node graphQL-basics/src/index.js",
+    "dev": "nodemon graphQL-basics/src/index.js --exec babel-node"
   },
   "keywords": [],
   "author": "",
@@ -14,6 +14,7 @@
     "babel-preset-env": "^1.7.0",
     "chalk": "^4.1.0",
     "git": "^0.1.5",
+    "graphql-yoga": "^1.18.3",
     "mysql2": "^2.1.0",
     "nodemon": "^2.0.6"
   },
@@ -25,5 +26,8 @@
     "url": "https://github.com/assaelstein/node-challenge/issues"
   },
   "homepage": "https://github.com/assaelstein/node-challenge#readme",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "prettier": "2.1.2"
+  }
 }
