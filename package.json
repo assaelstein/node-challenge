@@ -1,19 +1,29 @@
 {
   "name": "challenge",
   "version": "1.0.0",
-  "description": "",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "start":"babel-node src/index.js", 
     "dev": "nodemon src/app.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
     "chalk": "^4.1.0",
     "git": "^0.1.5",
     "mysql2": "^2.1.0",
-    "nodemon": "^2.0.4"
-  }
+    "nodemon": "^2.0.6"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/assaelstein/node-challenge.git"
+  },
+  "bugs": {
+    "url": "https://github.com/assaelstein/node-challenge/issues"
+  },
+  "homepage": "https://github.com/assaelstein/node-challenge#readme",
+  "description": ""
 }
