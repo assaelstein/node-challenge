@@ -27,12 +27,14 @@ const posts = [
 
 const typeDefs = `
 type Query {
+
 greeting(name: String): String,
 users(query: String):[User!]! 
 me: User!
 grades: [Int!]!
 add(numbers: [Float!]!): Float!
 posts:[Post!]
+
 }
 
 
