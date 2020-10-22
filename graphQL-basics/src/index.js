@@ -40,6 +40,7 @@ author: User!
 type Comment {
 id: ID!
 comment: String!
+author: User!
 }
 
 
@@ -112,10 +113,15 @@ const resolvers = {
         email: 'hiEmail',
       }
     },
-    comments(parents, args) {
+
+    comments(parent, args) {
+
       return comments
     },
   },
+
+  //end of Query 
+
   Post: {
     author(parent, args, ctx, info) {
       console.log('author parent:', parent)
@@ -133,6 +139,16 @@ const resolvers = {
       return toReturn
     },
   },
+  Comment: {
+    author(parent, args) {
+
+      console.log(`parent of 'author within comment':`, parent)
+
+      return users.find((user) => { return user.name === parent.author })
+
+
+    }
+  }
 }
 
 //listener

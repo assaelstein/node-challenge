@@ -15,7 +15,7 @@ const posts = [
 ]
 
 const comments = [
-    { id: '620', comment: 'Complete torah' }, { id: '619', comment: 'one less' }, { id: '618', comment: '18 is life!!' }, { id: '617', comment: '17 is good!!' }
+    { id: '620', comment: 'Complete torah', author: 'Dovid' }, { id: '619', comment: 'one less', author: 'Dovid' }, { id: '618', comment: '18 is life!!', author: 'Shalom' }, { id: '617', comment: '17 is good!!', author: 'Shalom' }
 ]
 
 module.exports = { users, posts, comments }
