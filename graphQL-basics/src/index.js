@@ -27,6 +27,7 @@ id: ID!
 name: String!
 email: String
 posts: [Post!]!
+comments: [Comment!]!
 }
 
 type Post {
@@ -115,12 +116,11 @@ const resolvers = {
     },
 
     comments(parent, args) {
-
       return comments
     },
   },
 
-  //end of Query 
+  //end of Query
 
   Post: {
     author(parent, args, ctx, info) {
@@ -138,17 +138,22 @@ const resolvers = {
       })
       return toReturn
     },
+    comments(parent, args) {
+      return comments.filter((comment) => {
+
+        return comment.author === parent.name
+        //return all comments that link with the user
+      })
+    },
   },
   Comment: {
     author(parent, args) {
-
-      console.log(`parent of 'author within comment':`, parent)
-
-      return users.find((user) => { return user.name === parent.author })
-
-
-    }
-  }
+      console.log('comment is being called!!')
+      return users.find((user) => {
+        return user.name === parent.author
+      })
+    },
+  },
 }
 
 //listener
