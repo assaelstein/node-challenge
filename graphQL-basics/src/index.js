@@ -1,5 +1,10 @@
 const { posts, users, comments } = require('./demo data')
 const { GraphQLServer } = require('graphql-yoga')
+const casual = require('casual')
+
+
+
+
 
 // Scalar types: string, boolean, int, float, ID
 
@@ -8,7 +13,7 @@ const { GraphQLServer } = require('graphql-yoga')
 
 //Type Definition (Schema)
 
-https: const typeDefs = `
+const typeDefs = `
 type Query {
 
 greeting(name: String): String,
@@ -18,6 +23,10 @@ grades: [Int!]!,
 add(numbers: [Float!]!): Float!,
 posts(query: String):[Post!]
 comments: [Comment!]! ,
+
+}
+type Mutation {
+  createUser(name:String!, email: String!, age: Int): User!
 
 }
 
@@ -122,7 +131,29 @@ const resolvers = {
     },
   },
 
-  //end of Query
+  Mutation: {
+    createUser(paret, args, ctx, info) {
+      const emailTaken = users.some((user) => user.email === args.email)
+
+      if (emailTaken) {
+        throw new Error('email takn!')
+      }
+
+      const user = {
+        id: casual.uuid,
+        name: args.name,
+        email: args.email,
+        age: args.age,
+      }
+
+      users.push(user)
+
+      console.log(user)
+
+      return user
+
+    },
+  },
 
   Post: {
     author(parent, args, ctx, info) {
@@ -133,7 +164,6 @@ const resolvers = {
     },
     comment(parent, arg) {
       return comments.find((comment) => {
-
         const toReturn = parent.id === comment.postId
         console.log(toReturn)
         return toReturn
