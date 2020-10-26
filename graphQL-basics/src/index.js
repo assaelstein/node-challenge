@@ -37,11 +37,13 @@ email: String
 content: String
 body: String
 author: User! 
+comment: Comment
 }
 type Comment {
 id: ID!
 comment: String!
 author: User!
+post: Post!
 }
 
 
@@ -129,6 +131,14 @@ const resolvers = {
         return user.id === parent.author
       })
     },
+    comment(parent, arg) {
+      return comments.find((comment) => {
+
+        const toReturn = parent.id === comment.postId
+        console.log(toReturn)
+        return toReturn
+      })
+    },
   },
   User: {
     posts(parent, args) {
@@ -140,7 +150,6 @@ const resolvers = {
     },
     comments(parent, args) {
       return comments.filter((comment) => {
-
         return comment.author === parent.name
         //return all comments that link with the user
       })
