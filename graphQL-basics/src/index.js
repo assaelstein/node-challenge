@@ -1,11 +1,24 @@
 const { posts, users, comments } = require('./demo data')
+const { dissoc } = require('ramda')
 const { GraphQLServer } = require('graphql-yoga')
 const casual = require('casual')
 
 
+//remove the 'name' key in posts nad replace with 'title'
+
+// const a = posts.forEach((post) => {  
+// //   return (Object.keys(post).map === 'name') ? "title" : "name"
+// // })
+
+// posts.forEach((post)=>{Object.entries(post)})
+const c = dissoc('name', posts[0])
+console.log(c)
+const b = posts.map((post) => { return dissoc('name', post) })
 
 
-
+// posts.forEach((post) => { return dissoc('name', post) })
+console.log('b:', b)
+// console.log('d:', posts)
 // Scalar types: string, boolean, int, float, ID
 
 //holding in lectures:
@@ -26,7 +39,8 @@ comments: [Comment!]! ,
 
 }
 type Mutation {
-  createUser(name:String!, email: String!, age: Int): User!
+  createUser(name:String!, email: String!, age: Int): User!,
+  createPost (name:String!, body:String!, published:Boolean!,author: String!): Post!
 
 }
 
@@ -153,6 +167,26 @@ const resolvers = {
       return user
 
     },
+    createPost(parent, args, ctx, info) {
+      const userExists = users.some((user) => user.id === args.author)
+
+      if (!userExists) {
+        throw new Error('user not found')
+      }
+
+      const post = {
+        id: casual.uuid,
+        name: args.name,
+        body: args.body,
+        published: args.published,
+        author: args.author
+      }
+      console.log(posts)
+
+      posts.push(post)
+      console.log(posts)
+
+    }
   },
 
   Post: {
