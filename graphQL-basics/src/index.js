@@ -1,23 +1,88 @@
-const { posts, users, comments } = require('./demo data')
+//let { posts, users, comments } = require('./demo data')
 const { dissoc } = require('ramda')
 const { GraphQLServer } = require('graphql-yoga')
 const casual = require('casual')
 
+let users
+let posts
+let comments
+
+
+users = [
+  {
+    id: '1',
+    name: 'Dovid',
+    email: 'ttt@ttt',
+  },
+  { id: '2', name: 'Shalom', email: 'example@tm.com' },
+]
+
+posts = [
+  {
+    name: 'post1',
+    id: '1',
+    email: 'gm',
+    body: 'the parsha of the week is Lech Lecha',
+    author: '1',
+  },
+  {
+    name: 'post2',
+    id: '2',
+    email: 'yh',
+    body: 'the parsha of the week is VaEira',
+    author: '1',
+  },
+  {
+    name: 'post3',
+    id: '3',
+    email: 'ol',
+    body: 'the parsha of the week is Noach',
+    author: '2',
+  },
+]
+
+comments = [
+  {
+    id: '620',
+    comment: 'Complete torah',
+    author: 'Dovid',
+    post: posts[0].id,
+  },
+  { id: '619', comment: 'one less', author: 'Dovid', post: posts[1].id },
+  { id: '618', comment: '18 is life!!', author: 'Shalom', post: posts[2].id },
+  { id: '617', comment: '17 is good!!', author: 'Shalom2', post: posts[1].id },
+]
+
+
+
+
+
 
 //remove the 'name' key in posts nad replace with 'title'
 
-// const a = posts.forEach((post) => {  
+// const one = {
+//   name: "Perth"
+
+// }
+
+// const two = {
+//   pop: 1.5,
+//   ...one
+// }
+
+// console.log(two)
+
+// const a = posts.forEach((post) => {
 // //   return (Object.keys(post).map === 'name') ? "title" : "name"
 // // })
 
 // posts.forEach((post)=>{Object.entries(post)})
-const c = dissoc('name', posts[0])
-console.log(c)
-const b = posts.map((post) => { return dissoc('name', post) })
-
+// const c = dissoc('name', posts[0])
+// console.log(c)
+// const b = posts.map((post) => { return dissoc('name', post) })
 
 // posts.forEach((post) => { return dissoc('name', post) })
-console.log('b:', b)
+// console.log('b:', b)
 // console.log('d:', posts)
 // Scalar types: string, boolean, int, float, ID
 
@@ -39,9 +104,29 @@ comments: [Comment!]! ,
 
 }
 type Mutation {
-  createUser(name:String!, email: String!, age: Int): User!,
-  createPost (name:String!, body:String!, published:Boolean!,author: String!): Post!
+  createUser(data: CreateUserInput): User!,
+  deleteUser(id:ID!):User!
+  createPost (data: CreatePostInput): Post!
+  createComment (data: CreateCommentInput ): Comment!
+}
 
+input CreateUserInput {
+  name: String!
+  email: String!
+  age: Int
+
+}
+input CreatePostInput {
+  name: String!
+  body: String!
+  published: Boolean
+  author: String!
+}
+
+input CreateCommentInput {
+  comment: String!,
+   author: String!,
+    post: String!
 }
 
 
@@ -60,6 +145,7 @@ email: String
 content: String
 body: String
 author: User! 
+published: Boolean
 comment: Comment
 }
 type Comment {
@@ -99,20 +185,18 @@ const resolvers = {
             .toLowerCase()
             .includes(args.query.toLowerCase())
 
-          console.log('title:', queryTitle)
-          console.log('body', queryBody)
+          // console.log('title:', queryTitle)
+          // console.log('body', queryBody)
 
           return queryTitle || queryBody
         })
       } else {
         return posts
       }
-      console.log(posts)
-      return posts
+      // console.log(posts)
     },
 
     greeting(parent, args, ctx, info) {
-      console.log(args)
       if (args.name) {
         return `Hello ${args.name}`
       }
@@ -120,7 +204,6 @@ const resolvers = {
     },
 
     add(undefined, args) {
-      console.log(args)
       if (args.numbers.length === 0) {
         return 0
       } else {
@@ -145,9 +228,11 @@ const resolvers = {
     },
   },
 
+  //MUTATION
+
   Mutation: {
     createUser(paret, args, ctx, info) {
-      const emailTaken = users.some((user) => user.email === args.email)
+      const emailTaken = users.some((user) => user.email === args.data.email)
 
       if (emailTaken) {
         throw new Error('email takn!')
@@ -155,51 +240,105 @@ const resolvers = {
 
       const user = {
         id: casual.uuid,
-        name: args.name,
-        email: args.email,
-        age: args.age,
+        ...args.data,
+        // name: args.name,
+        // email: args.email,
+        // age: args.age,
       }
 
       users.push(user)
 
-      console.log(user)
+      // console.log(user)
 
       return user
-
     },
+
+    deleteUser(parent, args) {
+      const userIndex = users.findIndex((user) => user.id === args.id)
+
+      // console.log(userIndex)
+      console.log(args)
+
+      if (userIndex === -1) {
+        throw new Error('user not found!')
+      }
+      const deletedUsers = users.splice(userIndex, 1)
+
+      posts = posts.filter((post) => {
+        const match = post.author === args.id
+
+        if (match) {
+          comments = comments.filter((comment) => comment.post !== post.id)
+
+          return !match
+        }
+      })
+      comments = comments.filter((comment) => comment.author !== args.id)
+
+      return deletedUsers[0]
+    },
+
     createPost(parent, args, ctx, info) {
-      const userExists = users.some((user) => user.id === args.author)
+      const userExists = users.some((user) => user.id === args.data.author)
 
       if (!userExists) {
         throw new Error('user not found')
       }
 
+      // const post = {
+      //   id: casual.uuid,
+      //   name: args.name,
+      //   body: args.body,
+      //   published: args.published,
+      //   author: args.author,
+      // }
+
       const post = {
         id: casual.uuid,
-        name: args.name,
-        body: args.body,
-        published: args.published,
-        author: args.author
+        ...args.data,
       }
-      console.log(posts)
 
       posts.push(post)
-      console.log(posts)
 
-    }
+      console.log('post made!!', post)
+
+      return post
+    },
+
+    createComment(parent, args) {
+      //what about user exists?
+      const postExists = posts.some((post) => post.id === args.data.post)
+      console.log(postExists)
+      //why like this, we want to find the post!!!
+      if (postExists) {
+        const comment = {
+          id: casual.uuid,
+          ...args.data,
+          // comment: args.comment,
+          // author: args.author,
+          // post: args.post,
+        }
+        console.log('comment made!', comment)
+        comments.push(comment)
+
+        return comment
+      } else {
+        throw new Error(`post ID doesn't exist!!`)
+      }
+    },
   },
 
   Post: {
     author(parent, args, ctx, info) {
-      console.log('author parent:', parent)
+      // console.log('author parent:', parent)
       return users.find((user) => {
         return user.id === parent.author
       })
     },
     comment(parent, arg) {
       return comments.find((comment) => {
-        const toReturn = parent.id === comment.postId
-        console.log(toReturn)
+        const toReturn = parent.id === comment.post
+        // console.log(toReturn)
         return toReturn
       })
     },
@@ -221,10 +360,13 @@ const resolvers = {
   },
   Comment: {
     author(parent, args) {
-      console.log('comment is being called!!')
+      // console.log('comment is being called!!')
       return users.find((user) => {
         return user.name === parent.author
       })
+    },
+    post(parent, args) {
+      return posts.find((post) => post.id === parent.post)
     },
   },
 }
@@ -243,17 +385,9 @@ server.start(() => {
 //sudo lsof -i :4000
 // kill -9 [PID]
 
-//notes
 
-// ! -> can't return null
-
-// type Post {
-//   pat: String!
-//   hat: Boolean
+// module.exports = {
+//   posts,
+//   users,
+//   comments
 // }
-// Post() {
-//   return {
-//     pat: 'blackandwhitecat',
-//     hat: true,
-//   }
-// },

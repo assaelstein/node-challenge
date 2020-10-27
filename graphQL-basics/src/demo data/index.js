@@ -1,7 +1,7 @@
+let { posts, users, comments } = require('../index')
+//let { updatedComments,updatedUsers,updatedPosts} = require('../index')
 
-
-
-const users = [
+users = [
     {
         id: '1',
         name: 'Dovid',
@@ -10,7 +10,7 @@ const users = [
     { id: '2', name: 'Shalom', email: 'example@tm.com' },
 ]
 
-const posts = [
+posts = [
     {
         name: 'post1',
         id: '1',
@@ -34,21 +34,19 @@ const posts = [
     },
 ]
 
-const comments = [
+comments = [
     {
         id: '620',
         comment: 'Complete torah',
         author: 'Dovid',
-        postId: posts[0].id,
+        post: posts[0].id,
     },
-    { id: '619', comment: 'one less', author: 'Dovid', postId: posts[1].id },
-    { id: '618', comment: '18 is life!!', author: 'Shalom', postId: posts[2].id },
-    { id: '617', comment: '17 is good!!', author: 'Shalom2', postId: posts[1].id },
+    { id: '619', comment: 'one less', author: 'Dovid', post: posts[1].id },
+    { id: '618', comment: '18 is life!!', author: 'Shalom', post: posts[2].id },
+    { id: '617', comment: '17 is good!!', author: 'Shalom2', post: posts[1].id },
 ]
-
 
 // console.log('Comments:->:', comments)
 // console.log('posts->:', posts)
-
 
 module.exports = { users, posts, comments }
