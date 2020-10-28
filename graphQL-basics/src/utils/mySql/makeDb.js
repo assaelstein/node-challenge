@@ -4,17 +4,16 @@ const dbConn = require('./connect')
 
 const createDB = async () => {
   try {
-    // const newSpecs = dissoc('database', mySqlConnectionSpecs)
-    // console.log(newSpecs)
-    const createDb = await dbConn.promise().query(
-        // "create database good2"
-      `CREATE DATABASE ${mySqlConnectionSpecs.database}`
+
+    await dbConn.promise().query(
+      `CREATE DATABASE ${mySqlConnectionSpecs.database};`
     )
-    // console.log('DB created!:',createDb)
+    await dbConn.promise().query(`USE ${mySqlConnectionSpecs.database}`)
 
     console.log(`DB ${mySqlConnectionSpecs.database} created!!`)
   } catch (e) {
-    console.log(`DB: '${mySqlConnectionSpecs.database}' already exists!` )
+    console.log(`DB: '${mySqlConnectionSpecs.database}' already exists!`)
+    await dbConn.promise().query(`USE ${mySqlConnectionSpecs.database}`)
   }
 }
 

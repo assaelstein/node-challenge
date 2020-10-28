@@ -4,18 +4,21 @@ const { mySqlConnectionSpecs, tables } = require('../../config')
 
 const createTables = async () => {
   try {
-    const promises = Object.values(tables).map((i) => {
-      const newInput = dissoc('tableName', i)
-      console.log('i:',i)
-      console.log(`CREATE TABLE ${i.tableName} (${newInput})`)
-     dbConn.promise().query(`CREATE TABLE ${i.tableName} (${newInput})`)
+    const array = Object.values(tables).map((tab) => {
+
+      const result = Object.values(tab.fields)
+      console.log(result)
+
+      const tableTest = dbConn.promise().query(`CREATE TABLE IF NOT EXISTS ${tab.name} (${result})`)
+
+      return result
+
+
     })
 
-    const result = await Promise.all(promises)
-    console.log(result)
-    return result
   } catch (e) {
-    console.log(e)
+
+    console.log(`table already exists!`)
   }
 }
 
