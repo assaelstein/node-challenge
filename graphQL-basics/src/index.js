@@ -2,11 +2,13 @@
 const { dissoc } = require('ramda')
 const { GraphQLServer } = require('graphql-yoga')
 const casual = require('casual')
+const setUpDbandTables = require('./utils/mySql/index')
 
 let users
 let posts
 let comments
 
+setUpDbandTables()
 
 users = [
   {
@@ -52,11 +54,6 @@ comments = [
   { id: '618', comment: '18 is life!!', author: 'Shalom', post: posts[2].id },
   { id: '617', comment: '17 is good!!', author: 'Shalom2', post: posts[1].id },
 ]
-
-
-
-
-
 
 //remove the 'name' key in posts nad replace with 'title'
 
@@ -384,7 +381,6 @@ server.start(() => {
 
 //sudo lsof -i :4000
 // kill -9 [PID]
-
 
 // module.exports = {
 //   posts,

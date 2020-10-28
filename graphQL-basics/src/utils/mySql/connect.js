@@ -1,9 +1,11 @@
 const mysql = require('mysql2')
+const { mySqlConnectionSpecs } = require('../../config')
 
 
-const connection = async (connectionSpecs) => {
+const connection = async (connectSpecs = mySqlConnectionSpecs) => {
 
-    const connect = mysql.promise().createConnectin(connectionSpecs)
+
+    const connect = mysql.promise().createConnection(connectSpecs)
 
     return connect
 }
