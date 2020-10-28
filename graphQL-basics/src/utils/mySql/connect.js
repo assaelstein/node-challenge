@@ -3,9 +3,9 @@ const mysql = require('mysql2')
 
 const connection = async (connectionSpecs) => {
 
-    mysql.promise().createConnectin(connectionSpecs)
+    const connect = mysql.promise().createConnectin(connectionSpecs)
 
-
+    return connect
 }
 
 

@@ -7,3 +7,13 @@ const mySqlConnectionSpecs = {
     password: 'P@ssw0rd',
     database: 'superman'
 }
+
+
+
+
+
+
+
+
+
+module.exports = { mySqlConnectionSpecs }
