@@ -12,7 +12,7 @@ const createDB = async () => {
 
     console.log(`DB ${mySqlConnectionSpecs.database} created!!`)
   } catch (e) {
-    console.log(`DB: '${mySqlConnectionSpecs.database}' already exists!`)
+    // console.log(`DB: '${mySqlConnectionSpecs.database}' already exists!`)
     await dbConn.promise().query(`USE ${mySqlConnectionSpecs.database}`)
   }
 }

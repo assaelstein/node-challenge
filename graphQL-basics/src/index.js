@@ -1,59 +1,18 @@
-//let { posts, users, comments } = require('./demo data')
+let { posts, users, comments } = require('./demo data')
 const { dissoc } = require('ramda')
 const { GraphQLServer } = require('graphql-yoga')
 const casual = require('casual')
-const setUpDbandTables = require('./utils/mySql/index')
+const { setUpDbandTables, addEntry } = require('./utils/mySql/index')
+const { tables } = require('./config')
 
-let users
-let posts
-let comments
+// let users
+// let posts
+// let comments
 
 setUpDbandTables()
 
-users = [
-  {
-    id: '1',
-    name: 'Dovid',
-    email: 'ttt@ttt',
-  },
-  { id: '2', name: 'Shalom', email: 'example@tm.com' },
-]
 
-posts = [
-  {
-    name: 'post1',
-    id: '1',
-    email: 'gm',
-    body: 'the parsha of the week is Lech Lecha',
-    author: '1',
-  },
-  {
-    name: 'post2',
-    id: '2',
-    email: 'yh',
-    body: 'the parsha of the week is VaEira',
-    author: '1',
-  },
-  {
-    name: 'post3',
-    id: '3',
-    email: 'ol',
-    body: 'the parsha of the week is Noach',
-    author: '2',
-  },
-]
 
-comments = [
-  {
-    id: '620',
-    comment: 'Complete torah',
-    author: 'Dovid',
-    post: posts[0].id,
-  },
-  { id: '619', comment: 'one less', author: 'Dovid', post: posts[1].id },
-  { id: '618', comment: '18 is life!!', author: 'Shalom', post: posts[2].id },
-  { id: '617', comment: '17 is good!!', author: 'Shalom2', post: posts[1].id },
-]
 
 //remove the 'name' key in posts nad replace with 'title'
 
@@ -114,7 +73,7 @@ input CreateUserInput {
 
 }
 input CreatePostInput {
-  name: String!
+  name: String
   body: String!
   published: Boolean
   author: String!
@@ -228,7 +187,7 @@ const resolvers = {
   //MUTATION
 
   Mutation: {
-    createUser(paret, args, ctx, info) {
+    createUser(parent, args, ctx, info) {
       const emailTaken = users.some((user) => user.email === args.data.email)
 
       if (emailTaken) {
@@ -243,7 +202,9 @@ const resolvers = {
         // age: args.age,
       }
 
-      users.push(user)
+      addEntry(tables.Users.name, user)
+
+      //users.push(user)
 
       // console.log(user)
 
@@ -294,8 +255,8 @@ const resolvers = {
         id: casual.uuid,
         ...args.data,
       }
-
-      posts.push(post)
+      addEntry(tables.Posts.name, post)
+      //posts.push(post)
 
       console.log('post made!!', post)
 

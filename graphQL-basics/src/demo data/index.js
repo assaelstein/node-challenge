@@ -1,7 +1,7 @@
-let { posts, users, comments } = require('../index')
-//let { updatedComments,updatedUsers,updatedPosts} = require('../index')
+// let { posts, users, comments } = require('../index')
+// //let { updatedComments,updatedUsers,updatedPosts} = require('../index')
 
-users = [
+let users = [
     {
         id: '1',
         name: 'Dovid',
@@ -10,7 +10,7 @@ users = [
     { id: '2', name: 'Shalom', email: 'example@tm.com' },
 ]
 
-posts = [
+let posts = [
     {
         name: 'post1',
         id: '1',
@@ -34,7 +34,7 @@ posts = [
     },
 ]
 
-comments = [
+let comments = [
     {
         id: '620',
         comment: 'Complete torah',
