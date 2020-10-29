@@ -1,10 +1,10 @@
 module.exports = {
   mySqlConnectionSpecs: {
     host: '127.0.0.1',
-    port: '32769',
+    port: '3306',
     user: 'root',
     password: 'openSesame',
-    database: 'graphql',
+    database: 'mysqldb',
   },
   tables: {
     Users: {
@@ -13,6 +13,7 @@ module.exports = {
         id: `id varchar(255)`,
         name: `name varchar(255)`,
         email: `email varchar(255)`,
+        age: `age varchar(255)`
       },
     },
     Comments: {
@@ -32,7 +33,7 @@ module.exports = {
         email: `email varchar(255)`,
         body: `body varchar(255)`,
         author: `author varchar(255)`,
-        published: `published varchar(255)`
+        //published: `published varchar(255)`
       },
     },
   },

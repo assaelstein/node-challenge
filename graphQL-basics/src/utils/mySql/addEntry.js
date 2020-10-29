@@ -5,20 +5,25 @@ const addEntry = async (tableName, input) => {
         const inputColumn = Object.keys(input).map((i) => {
             return `${i}`
         })
-        console.log('columns:', inputColumn)
+        // console.log('columns:', inputColumn)
         const inputValues = Object.values(input).map((i) => {
             return `'${i}'`
         })
-        console.log('inputValues:', inputValues)
+        // console.log('inputValues:', inputValues)
 
-        console.log(
-            `INSERT INTO ${tableName}(${inputColumn}) VALUES (${inputValues})`,
-        )
+        // console.log(
+        //     `INSERT INTO ${tableName}(${inputColumn}) VALUES (${inputValues})`,
+        // )
 
-        await dbConn
+        const result = await dbConn
             .promise()
             .query(`INSERT INTO ${tableName}(${inputColumn}) VALUES (${inputValues})`)
+
+        return result
+
     } catch (e) {
+
+        console.log('error with add!!')
         throw e
     }
 }

@@ -2,6 +2,7 @@ const connect = require('./connect')
 const makeDb = require('./makeDb')
 const createTables = require('./createTable')
 const addEntry = require('./addEntry')
+const getEntry = require('./getEntry')
 
 const setUpDbandTables = async () => {
   try {
@@ -14,4 +15,4 @@ const setUpDbandTables = async () => {
   }
 }
 
-module.exports = { setUpDbandTables, addEntry }
+module.exports = { setUpDbandTables, addEntry, getEntry }

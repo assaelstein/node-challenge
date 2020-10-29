@@ -1,14 +1,15 @@
 const dbConn = require('./connect')
 
+const getEntry = async (columns, tableName) => {
+    // console.log(`SELECT ${columns} FROM ${tableName}`)
 
-const getEntry = async () =>{
+    const result = await dbConn
+        .promise()
+        .query(`SELECT ${columns} FROM ${tableName}`)
 
+    // console.log(result[0][0])
 
-dbConn.promise().query(`SELECT ${fields}`)
-
-
+    return result[0][0]
 }
 
-
-
-module.exports =
+module.exports = getEntry

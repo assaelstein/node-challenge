@@ -1,51 +1,13 @@
-let { posts, users, comments } = require('./demo data')
+// let { posts, users, comments } = require('./demo data')
 const { dissoc } = require('ramda')
 const { GraphQLServer } = require('graphql-yoga')
 const casual = require('casual')
-const { setUpDbandTables, addEntry } = require('./utils/mySql/index')
+const { setUpDbandTables, addEntry, getEntry } = require('./utils/mySql/index')
 const { tables } = require('./config')
-
-// let users
-// let posts
-// let comments
+const { postsQuery, usersQuery } = require('./modules/query/query')
 
 setUpDbandTables()
 
-
-
-
-//remove the 'name' key in posts nad replace with 'title'
-
-// const one = {
-//   name: "Perth"
-
-// }
-
-// const two = {
-//   pop: 1.5,
-//   ...one
-// }
-
-// console.log(two)
-
-// const a = posts.forEach((post) => {
-// //   return (Object.keys(post).map === 'name') ? "title" : "name"
-// // })
-
-// posts.forEach((post)=>{Object.entries(post)})
-// const c = dissoc('name', posts[0])
-// console.log(c)
-// const b = posts.map((post) => { return dissoc('name', post) })
-
-// posts.forEach((post) => { return dissoc('name', post) })
-// console.log('b:', b)
-// console.log('d:', posts)
-// Scalar types: string, boolean, int, float, ID
-
-//holding in lectures:
-//www.udemy.com/course/graphql-bootcamp/learn/lecture/11838226#questions
-
-//Type Definition (Schema)
 
 const typeDefs = `
 type Query {
@@ -60,7 +22,7 @@ comments: [Comment!]! ,
 
 }
 type Mutation {
-  createUser(data: CreateUserInput): User!,
+  createUser(name: String!, email: String!, age: Int): User!,
   deleteUser(id:ID!):User!
   createPost (data: CreatePostInput): Post!
   createComment (data: CreateCommentInput ): Comment!
@@ -119,68 +81,52 @@ post: Post!
 const resolvers = {
   Query: {
     users(undefined, args) {
-      if (!args.query) {
-        return users
-      } else {
-        return users.filter((user) => {
-          return user.name.toLowerCase().includes(args.query.toLowerCase())
-        })
+      const usersQuery = async () => {
+        const result = await getEntry(['*'], tables.Users.name)
+        let users = [result]
+        if (!args.query) {
+          return users
+        } else {
+          return users.filter((user) => {
+            return user.name.toLowerCase().includes(args.query.toLowerCase())
+          })
+        }
       }
+      usersQuery()
     },
 
-    posts(undefined, args) {
-      if (args.query) {
-        console.log('query:', args.query)
-        return posts.filter((post) => {
-          console.log(post.name)
+    posts(parent, args) {
+      const postsQuery = async () => {
+        const result = await getEntry(['*'], tables.Posts.name)
+        let posts = [result]
+        if (args.query) {
+          return posts.filter((post) => {
+            const queryTitle = post.name
+              .toLowerCase()
+              .includes(args.query.toLowerCase())
+            const queryBody = post.body
+              .toLowerCase()
+              .includes(args.query.toLowerCase())
 
-          const queryTitle = post.name
-            .toLowerCase()
-            .includes(args.query.toLowerCase())
-          const queryBody = post.body
-            .toLowerCase()
-            .includes(args.query.toLowerCase())
-
-          // console.log('title:', queryTitle)
-          // console.log('body', queryBody)
-
-          return queryTitle || queryBody
-        })
-      } else {
-        return posts
+            return queryTitle || queryBody
+          })
+        } else {
+          console.log('return !!!')
+          console.log(posts)
+          return posts[0]
+        }
       }
-      // console.log(posts)
-    },
-
-    greeting(parent, args, ctx, info) {
-      if (args.name) {
-        return `Hello ${args.name}`
-      }
-      return 'Hello!'
-    },
-
-    add(undefined, args) {
-      if (args.numbers.length === 0) {
-        return 0
-      } else {
-        return args.numbers.reduce((accumulator, currentValue) => {
-          return accumulator + currentValue
-        })
-      }
-    },
-    grades(parent, args, ctx, info) {
-      return [613, 365, 7]
-    },
-    me() {
-      return {
-        id: '3423',
-        name: 'Assael',
-        email: 'hiEmail',
-      }
+      postsQuery()
     },
 
     comments(parent, args) {
-      return comments
+      const commentsQuery = async () => {
+        const result = await getEntry(['*'], tables.Posts.name)
+        let comments = [result]
+        return comments
+      }
+
+      commentsQuery()
     },
   },
 
@@ -188,27 +134,41 @@ const resolvers = {
 
   Mutation: {
     createUser(parent, args, ctx, info) {
-      const emailTaken = users.some((user) => user.email === args.data.email)
+      console.log('args^^^^^^^^^^^^', args)
 
-      if (emailTaken) {
-        throw new Error('email takn!')
+      const makeUser = async () => {
+        console.log('MAKE USER!!!!!!---1')
+
+        // const result = await getEntry(['*', tables.Users.name])
+        // if (result !== 'undefined') {
+
+        //   const emailTaken = users.some((user) => user.email === args.data.email)
+
+        //   if (emailTaken) {
+        //     throw new Error('email takn!')
+        //   }
+        // }
+        console.log('MAKE USER!!!!!!---2')
+        const user = {
+          id: casual.uuid,
+          //...args.data,
+          name: args.name,
+          email: args.email,
+          age: args.age,
+        }
+
+        // console.log('user:', user)
+
+        await addEntry(tables.Users.name, user)
+     
+
+        //users.push(user)
+
+        // console.log(user)
+
+        //return user
       }
-
-      const user = {
-        id: casual.uuid,
-        ...args.data,
-        // name: args.name,
-        // email: args.email,
-        // age: args.age,
-      }
-
-      addEntry(tables.Users.name, user)
-
-      //users.push(user)
-
-      // console.log(user)
-
-      return user
+      makeUser()
     },
 
     deleteUser(parent, args) {
@@ -237,30 +197,41 @@ const resolvers = {
     },
 
     createPost(parent, args, ctx, info) {
-      const userExists = users.some((user) => user.id === args.data.author)
+      const makePost = async () => {
+        let result = await getEntry(['*'], tables.Users.name)
+        console.log(result)
 
-      if (!userExists) {
-        throw new Error('user not found')
+        let users = [result]
+
+        console.log(users)
+
+        const userExists = users.some((user) => user.id === args.data.author)
+
+        if (!userExists) {
+          throw new Error('user not found')
+        }
+
+        // const post = {
+        //   id: casual.uuid,
+        //   name: args.name,
+        //   body: args.body,
+        //   published: args.published,
+        //   author: args.author,
+        // }
+
+        const post = {
+          id: casual.uuid,
+          ...args.data,
+        }
+        addEntry(tables.Posts.name, post)
+        //posts.push(post)
+
+        console.log('post made!!', post)
+
+
+        return post
       }
-
-      // const post = {
-      //   id: casual.uuid,
-      //   name: args.name,
-      //   body: args.body,
-      //   published: args.published,
-      //   author: args.author,
-      // }
-
-      const post = {
-        id: casual.uuid,
-        ...args.data,
-      }
-      addEntry(tables.Posts.name, post)
-      //posts.push(post)
-
-      console.log('post made!!', post)
-
-      return post
+      makePost()
     },
 
     createComment(parent, args) {
@@ -276,8 +247,10 @@ const resolvers = {
           // author: args.author,
           // post: args.post,
         }
-        console.log('comment made!', comment)
-        comments.push(comment)
+
+        addEntry(tables.Comments.name, comment)
+        // console.log('comment made!', comment)
+        // comments.push(comment)
 
         return comment
       } else {
@@ -305,6 +278,7 @@ const resolvers = {
     posts(parent, args) {
       console.log('post parent:', parent)
       const toReturn = posts.filter((post) => {
+        console.log('in USER')
         return post.author === parent.id
       })
       return toReturn
@@ -316,6 +290,7 @@ const resolvers = {
       })
     },
   },
+
   Comment: {
     author(parent, args) {
       // console.log('comment is being called!!')
